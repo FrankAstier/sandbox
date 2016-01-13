@@ -41,7 +41,7 @@ before_script:
   - cmake CMakeLists.txt
 
 script:
-  - make
+  - make - j 8
   - cpp-utils/bytes-tests
   - cpp-utils/codecs-tests
   - cpp-utils/fast-hash-tests
