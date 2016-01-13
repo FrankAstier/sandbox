@@ -4,7 +4,6 @@
 #include <list>
 #include <set>
 
-#include <bytearray.hpp>
 #include <fast_hash.hpp>
 #include <stl_io.hpp>
 

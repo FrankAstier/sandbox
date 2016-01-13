@@ -8,6 +8,6 @@ message("CMake dir     : " ${CMAKE_ROOT})
 message("Compiler      : " ${CMAKE_CXX_COMPILER})
 message("Flags         : " ${CMAKE_CXX_FLAGS})
 
-include_directories(cpp-utils/include include)
+include_directories(../cpp-utils/include include)
 set(SOURCE_FILES test/main.cpp include/open_table.hpp)
 add_executable(open-table ${SOURCE_FILES})

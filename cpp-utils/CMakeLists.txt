@@ -12,8 +12,10 @@ message("Flags         : " ${CMAKE_CXX_FLAGS})
 include_directories(${Boost_INCLUDE_DIRS})
 include_directories(include)
 
-set(SOURCE_FILES include/bytearray.hpp include/fast_hash.hpp include/toolbox.hpp include/stl_io.hpp)
+set(SOURCE_FILES include/bytes.hpp include/fast_hash.hpp include/toolbox.hpp include/stl_io.hpp include/codecs.hpp)
 
-add_executable(bytearray-tests test/bytearray_tests.cpp ${SOURCE_FILES})
+add_executable(bytes-tests test/bytes_tests.cpp ${SOURCE_FILES})
 add_executable(toolbox-tests test/toolbox_tests.cpp ${SOURCE_FILES})
 add_executable(stl-io-tests test/stl_io_tests.cpp ${SOURCE_FILES})
+add_executable(codecs-tests test/codecs_tests.cpp ${SOURCE_FILES})
+add_executable(fast-hash-tests test/fast_hash_tests.cpp ${SOURCE_FILES})

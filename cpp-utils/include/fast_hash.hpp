@@ -30,6 +30,8 @@
 #include <inttypes.h>
 #include <string>
 
+#include "bytes.hpp"
+
 namespace utils {
 
 inline uint64_t fasthash64(const void *buf, size_t len, uint64_t seed =0) {
@@ -82,6 +84,11 @@ inline uint64_t fasthash64(const void *buf, size_t len, uint64_t seed =0) {
 
 inline uint64_t fasthash64(const std::string& str, uint64_t seed =0) {
   return fasthash64(&str[0], str.size(), seed);
+}
+
+template <typename S, typename C, bool O>
+inline uint64_t fasthash64(const utils::Bytes<S,C,O>& str, uint64_t seed =0) {
+  return fasthash64(str.data(), str.size(), seed);
 }
 
 } // end namespace utils
