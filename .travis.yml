@@ -3,7 +3,6 @@ compiler:
   - g++
   - clang
 os:       linux
-#sudo:     required
 
 addons:
   apt:
@@ -42,10 +41,10 @@ before_script: cmake CMakeLists.txt
 
 script:
   - make
-  - ./bytearray-tests
+  - ./bytes-tests
   - ./toolbox-tests
   - ./stl-io-tests
-  - valgrind --leak-check=full ./bytearray-tests
+  - valgrind --leak-check=full ./bytes-tests
   - valgrind --leak-check=full ./toolbox-tests
   - valgrind --leak-check=full ./stl-io-tests
 

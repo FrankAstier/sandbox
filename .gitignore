@@ -38,3 +38,6 @@ install_manifest.txt
 
 .idea
 .DS_Store
+
+open-addressing/open-table
+perfect-hash/perfect-hash
