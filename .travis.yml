@@ -37,17 +37,26 @@ install:
   - if [ "$CXX" == "clang++" ]; then sudo apt-get install --allow-unauthenticated -qq clang-3.4; fi
   - if [ "$CXX" == "clang++" ]; then export CXX="clang++-3.4"; fi
 
-before_script: cmake CMakeLists.txt
+before_script:
+  - cmake CMakeLists.txt
 
 script:
   - make
-  - ./bytes-tests
-  - ./toolbox-tests
-  - ./stl-io-tests
-  - valgrind --leak-check=full ./bytes-tests
-  - valgrind --leak-check=full ./toolbox-tests
-  - valgrind --leak-check=full ./stl-io-tests
+  - cpp-utils/bytes-tests
+  - cpp-utils/codecs-tests
+  - cpp-utils/fast-hash-tests
+  - cpp-utils/stl-io-tests
+  - cpp-utils/toolbox-tests
+  - open-addressing/open-table
+  - perfect-hash/perfect-hash
+  - valgrind --leak-check=full cpp-utils/bytes-tests
+  - valgrind --leak-check=full cpp-utils/codecs-tests
+  - valgrind --leak-check=full cpp-utils/fast-hash-tests
+  - valgrind --leak-check=full cpp-utils/stl-io-tests
+  - valgrind --leak-check=full cpp-utils/toolbox-tests
+  - valgrind --leak-check=full open-addressing/open-table
+  - valgrind --leak-check=full perfect-hash/perfect-hash
 
-after_success:
-  - coveralls -r . -b . -E Doxyfile --repo-token "${COVERALLS_TOKEN}" --gcov-options '\-lp'
+#after_success:
+#  - coveralls -r . -b . -E Doxyfile --repo-token "${COVERALLS_TOKEN}" --gcov-options '\-lp'
 
