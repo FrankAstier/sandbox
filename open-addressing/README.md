@@ -1,3 +1,3 @@
-# Open Addressing [![Build status](https://travis-ci.org/FrankAstier/open-addressing.svg?branch=master)](https://travis-ci.org/FrankAstier/open-addressing)
+# Open Addressing
 
 - Simple open addressing prototype.

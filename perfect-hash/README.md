@@ -1,4 +1,4 @@
-# Perfect hash [![Build status](https://travis-ci.org/FrankAstier/perfect-hash.svg?branch=master)](https://travis-ci.org/FrankAstier/perfect-hash)
+# Perfect hash
 
 ## Greedy algorithm
 - The first version is a very simple greedy algorithm to break ties (collision in the same bucket) by re-hashing with
