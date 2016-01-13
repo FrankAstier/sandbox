@@ -39,5 +39,11 @@ install_manifest.txt
 .idea
 .DS_Store
 
+cpp-utils/bytes-tests
+cpp-utils/codecs-tests
+cpp-utils/fast-hash-tests
+cpp-utils/stl-io-tests
+cpp-utils/toolbox-tests
+
 open-addressing/open-table
 perfect-hash/perfect-hash
