@@ -3,16 +3,12 @@ project(cpp-utils)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11 --coverage")
 
-message("System        : " ${CMAKE_SYSTEM})
-message("CMake dir     : " ${CMAKE_ROOT})
-message("Compiler      : " ${CMAKE_CXX_COMPILER})
-message("Flags         : " ${CMAKE_CXX_FLAGS})
-
 #find_package(Boost 1.5.9 REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 include_directories(include)
 
-set(SOURCE_FILES include/bytes.hpp include/fast_hash.hpp include/toolbox.hpp include/stl_io.hpp include/codecs.hpp)
+set(SOURCE_FILES include/bytes.hpp include/fast_hash.hpp include/toolbox.hpp include/stl_io.hpp
+        include/codecs.hpp include/type_traits.hpp)
 
 add_executable(bytes-tests test/bytes_tests.cpp ${SOURCE_FILES})
 add_executable(toolbox-tests test/toolbox_tests.cpp ${SOURCE_FILES})
