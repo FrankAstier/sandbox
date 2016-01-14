@@ -2,7 +2,8 @@ language: cpp
 compiler:
   - g++
   - clang
-os:       linux
+os:
+  - linux
 
 addons:
   apt:
@@ -57,6 +58,6 @@ script:
   - valgrind --leak-check=full open-addressing/open-table
   - valgrind --leak-check=full perfect-hash/perfect-hash
 
-#after_success:
-#  - coveralls -r . -b . -E Doxyfile --repo-token "${COVERALLS_TOKEN}" --gcov-options '\-lp'
+after_success:
+  - coveralls -r . -b . -E Doxyfile --repo-token "${COVERALLS_TOKEN}" --gcov-options '\-lp'
 
