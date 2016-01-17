@@ -33,31 +33,74 @@
 
 namespace utils {
 
-//--------------------------------------------------------------------------------
+/**
+ * A class to manipulate the way we display STL objects.
+ */
+struct stl_io_manips {
+  static size_t abbreviate_threshold; // 0 means "don't abbreviate"
+  static bool abbreviate_display_n; // display number of elements left
+};
+
+size_t stl_io_manips::abbreviate_threshold = 0;
+bool stl_io_manips::abbreviate_display_n = false;
+
+struct SetAbbreviateThreshold { size_t t; };
+inline SetAbbreviateThreshold set_abbreviate_threshold(size_t tt) { return {tt}; }
+
+inline std::ostream& operator<<(std::ostream& out, SetAbbreviateThreshold sat) {
+  stl_io_manips::abbreviate_threshold = sat.t;
+  return out;
+}
+
+struct SetAbbreviateDisplayN { bool display; };
+inline SetAbbreviateDisplayN set_abbreviate_display_n(bool display =true) { return {display}; }
+
+inline std::ostream& operator<<(std::ostream& out, SetAbbreviateDisplayN sadn) {
+  stl_io_manips::abbreviate_display_n = sadn.display;
+  return out;
+}
+
+/**
+ * Stream a pair. No surprise here.
+ */
 template <typename T1, typename T2>
 inline std::ostream& operator<<(std::ostream& out, const std::pair<T1,T2>& p) {
   return out << "(" << p.first << "," << p.second << ")";
 }
 
-//--------------------------------------------------------------------------------
 /**
  * Dump the contents of any std container to a stream. Very useful in debugging
  * in particular.
  */
 template <typename C, typename std::enable_if<utils::is_std_container<C>::value>::type* =nullptr>
 inline std::ostream& operator<<(std::ostream& out, const C& c) {
-  out << "{";
+
   size_t S = c.size();
-  if (S > 0) {
-    auto it = c.begin();
-    for (size_t i = 0; i < S - 1; ++i, ++it)
-      out << *it << ",";
+
+  if (S == 0)
+    return out << "{}";
+
+  out << "{";
+
+  if (stl_io_manips::abbreviate_threshold > 0)
+    S = std::min(S, stl_io_manips::abbreviate_threshold+1);
+
+  auto it = c.begin();
+  for (size_t i = 0; i < S - 1; ++i, ++it)
+    out << *it << ",";
+
+  if (stl_io_manips::abbreviate_threshold > 0)
+    if (stl_io_manips::abbreviate_display_n) {
+      out << "..(" << c.size()-(S-1) << ")..";
+    } else {
+      out << "..";
+    }
+  else
     out << *it;
-  }
+
   out << "}";
   return out;
 }
-
 
 ////--------------------------------------------------------------------------------
 //// IO CONTROL AND MANIPULATORS
