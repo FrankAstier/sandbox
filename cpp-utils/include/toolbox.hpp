@@ -888,7 +888,7 @@ struct Gaussian2D // : public std::binary_function<T, T, T> (SWIG pb)
 //  if (factorial_cache.empty()) {
 //
 //    unsigned long long fc[] =
-//    {0, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800, 39916800, \
+//    {0, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800, 39916800,
 //        479001600, 6227020800ull, 87178291200ull};
 //
 //    for (size_t i = 0; i < 15; ++i)
@@ -912,7 +912,7 @@ struct Gaussian2D // : public std::binary_function<T, T, T> (SWIG pb)
 //  static boost::unordered_map<size_t, unsigned long long> pow2_cache;
 //
 //  if (pow2_cache.empty()) {
-//    unsigned long long p2c[] = {1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, \
+//    unsigned long long p2c[] = {1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096,
 //                      8192, 16384, 32768, 65536};
 //
 //    for (size_t i = 0; i <= 16; ++i)

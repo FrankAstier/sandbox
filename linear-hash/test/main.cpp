@@ -26,22 +26,25 @@ vector<string> generate_keys(size_t N) {
 }
 
 /**
+ * m: initial number of buckets
  * i: splitting round number
  * p: bucket to split next
  */
-uint64_t bucket_index(const string& key, size_t i, size_t p) {
+uint64_t bucket_index(const string& key, size_t m, size_t i, size_t p) {
   uint64_t h = fasthash64(key, 0);
-  return h;
+  uint64_t k = (1 << i) * m;
+  uint64_t hm = h % k;
+  return hm >= p ? hm : h % (2*k);
 }
 
 
 void test_linear_hash() {
 
-  size_t M = 1000, N = 1000;
+  size_t M = 3, N = 1000;
 
   for (size_t i = 0; i < M; ++i) {
     vector<string> keys = generate_keys(N);
-
+    cout << bucket_index(keys[i], 100, 0, 0) << endl;
   }
 }
 
