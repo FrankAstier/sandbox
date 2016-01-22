@@ -9,4 +9,5 @@ message("Flags         : " ${CMAKE_CXX_FLAGS})
 add_subdirectory(cpp-utils)
 add_subdirectory(open-addressing)
 add_subdirectory(perfect-hash)
+add_subdirectory(linear-hash)
 

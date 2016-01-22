@@ -102,6 +102,30 @@ inline std::ostream& operator<<(std::ostream& out, const C& c) {
   return out;
 }
 
+///**
+// * Stream integer in binary, with group and leading zeros if needed.
+// */
+//inline std::string bin(unsigned long long x, size_t g =8, size_t n =64) {
+//  size_t n_bits = (size_t) std::log2(x) + 1;
+//  std::cout << n_bits << std::endl;
+//  bool str[n];
+//  for (size_t i = 0; i < n_bits; ++i) {
+//    str[n-i-1] = (bool) ((x & (1 << i)) / (1 << i));
+//  }
+//  std::stringstream s;
+//  for (size_t i = 0; i < n - n_bits; ++i) {
+//    s << '0';
+//    if (i % g == 0)
+//      s << ' ';
+//  }
+//  for (size_t i = 0; i < n_bits; ++i) {
+//    s << str[i];
+//    if (i % g == 0)
+//      s << ' ';
+//  }
+//  return s.str();
+//}
+
 ////--------------------------------------------------------------------------------
 //// IO CONTROL AND MANIPULATORS
 ////--------------------------------------------------------------------------------

@@ -50,6 +50,7 @@ script:
   - cpp-utils/toolbox-tests
   - open-addressing/open-table
   - perfect-hash/perfect-hash
+  - linear-hash/linear-hash
   - valgrind --leak-check=full cpp-utils/bytes-tests
   - valgrind --leak-check=full cpp-utils/codecs-tests
   - valgrind --leak-check=full cpp-utils/fast-hash-tests
@@ -57,6 +58,7 @@ script:
   - valgrind --leak-check=full cpp-utils/toolbox-tests
   - valgrind --leak-check=full open-addressing/open-table
   - valgrind --leak-check=full perfect-hash/perfect-hash
+  - valgrind --leak-check=full linear-hash/linear-hash
 
 after_success:
   - coveralls -r . -b . -E Doxyfile --repo-token "${COVERALLS_TOKEN}" --gcov-options '\-lp'

@@ -29,6 +29,8 @@
 #include <math.h>
 #include <stdio.h>
 
+#include <iostream>
+
 // Not on win32!!!
 #include <sys/time.h>
 #include <sys/types.h>

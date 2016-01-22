@@ -62,10 +62,17 @@ void test_abbreviate_display_n() {
   }
 }
 
+//void test_bin() {
+//  cout << "Testing bin" << endl;
+//  {
+//    cout << bin(31) << endl;
+//  }
+//}
 
 int main() {
   test_std_container_output();
   test_abbreviate_threshold();
   test_abbreviate_display_n();
+  //test_bin();
   return 0;
 }
