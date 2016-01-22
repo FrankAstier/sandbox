@@ -9,7 +9,7 @@ using namespace utils;
 
 void test_fasthash64() {
   {
-    char key[] = "abcdef";
+    char key[] = "abcdefghijklmnop";
     Bytes<size_t,char,true> x(key);
     Bytes<size_t,char,false> y(key);
     assert(fasthash64(x) == fasthash64(y));
