@@ -22,7 +22,7 @@ vector<Bytes<size_t,char,true>> generate_keys(size_t N) {
 
 void test_open_addressing() {
 
-  size_t N = 1000;
+  size_t N = 20;
   vector<Bytes<size_t,char,true>> keys = generate_keys(N);
   OpenTable table(N);
   for (size_t i = 0; i < N; ++i)
