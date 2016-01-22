@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8) # Travis-ci doesn't want better
 project(cpp-utils)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11") # --coverage")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11 --coverage")
 
 #find_package(Boost 1.5.9 REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})

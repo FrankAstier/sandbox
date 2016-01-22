@@ -25,6 +25,15 @@ vector<string> generate_keys(size_t N) {
   return keys;
 }
 
+/**
+ * i: splitting round number
+ * p: bucket to split next
+ */
+uint64_t bucket_index(const string& key, size_t i, size_t p) {
+  uint64_t h = fasthash64(key, 0);
+  return h;
+}
+
 
 void test_linear_hash() {
 
