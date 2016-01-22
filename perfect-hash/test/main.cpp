@@ -10,10 +10,6 @@
 using namespace std;
 using namespace utils;
 
-class D : public std::ostream {
-
-};
-
 using Bucket = list<string>;
 
 vector<string> generate_keys(size_t N) {
@@ -116,7 +112,7 @@ size_t p_hash(const string& key, const vector<int>& H) {
 
 void test_perfect_hash() {
 
-  size_t M = 1000, N = 1000;
+  size_t M = 3, N = 1000;
 
   for (size_t i = 0; i < M; ++i) {
     vector<string> keys = generate_keys(N);
