@@ -28,7 +28,7 @@ vector<string> generate_keys(size_t N) {
 void test_bucket_index() {
 
   size_t M = 3, N = 1000;
-  LinearHash<string, string> lh;
+  LinearHash_LH<string, string> lh;
 
   for (size_t i = 0; i < M; ++i) {
     vector<string> keys = generate_keys(N);
@@ -39,7 +39,7 @@ void test_bucket_index() {
 void test() {
 
   {
-    LinearHash<string, string> lh(4,2);
+    LinearHash_LH<string, string> lh(4, 2);
     for (size_t i = 1; i < 100; ++i) {
       stringstream key; key << "key-" << i;
       stringstream value; value << "value-" << i;

@@ -10,10 +10,25 @@
 
 using namespace utils;
 
+/**
+ * Simplest linear hash.
+ *
+ * Full buckets are not necessarily split, and an overflow space for temporary overflow buckets is required.
+ * Buckets split are not necessarily full.
+ * Every bucket will be split sooner or later and so all overflows will be reclaimed and rehashed.
+ * Split pointer p decides which bucket to split.
+ * - p is independent of overflowing bucket.
+ * Load factor is between 50 and 70%, with possibly many empty buckets.
+ * What if p lands on a bucket which has 1 or more full overflow buckets?
+ * - The split will only reduce the overflow bucket count by 1, and the remaining overflow buckets
+ * - will have to be recreated by seeing which of the new 2 buckets, or their overflow buckets,
+ * - the overflow entries belong.
+ * The splitting process can overflow another bucket, which will be split only much later.
+ */
 template <typename K, typename V>
-struct LinearHash {
+struct LinearHash_LH {
 
-  LinearHash(size_t n_buckets =100, size_t bucket_size =4)
+  LinearHash_LH(size_t n_buckets =100, size_t bucket_size =4)
       : buckets(n_buckets),
         m(n_buckets),
         b(bucket_size),
