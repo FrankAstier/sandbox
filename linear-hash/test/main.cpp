@@ -32,22 +32,30 @@ void test_bucket_index() {
 
   for (size_t i = 0; i < M; ++i) {
     vector<string> keys = generate_keys(N);
-    cout << lh.bucket_index(keys[i]) << endl;
+    cout << lh.bucket_index(keys[i], 0) << endl;
   }
 }
 
-void test_put() {
+void test() {
 
   {
-    LinearHash<string, string> lh;
-    lh.put("key-1", "123");
+    LinearHash<string, string> lh(4,2);
+    for (size_t i = 1; i < 10; ++i) {
+      stringstream key; key << "key-" << i;
+      stringstream value; value << "value-" << i;
+      lh.put(key.str(), value.str());
+      lh.print();
+      pair<bool,string> v = lh.get(key.str());
+      assert(v.first);
+      assert(v.second == value.str());
+    }
   }
 }
 
 int main() {
 
   test_bucket_index();
-  test_put();
+  test();
 
   return 0;
 }
