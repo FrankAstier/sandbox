@@ -5,56 +5,56 @@
 #include <set>
 
 #include <stl_io.hpp>
-#include <linear-hash.hpp>
+#include "linear-hash-LH.hpp"
+#include "linear-hash-PS.hpp"
 
 using namespace std;
 using namespace utils;
 
-using Bucket = list<string>;
+using Data = vector<pair<string,string>>;
 
-vector<string> generate_keys(size_t N) {
+Data generate_data(size_t N) {
 
-  vector<string> keys(N);
+  Data data(N);
 
   for (size_t i = 0; i < N; ++i) {
-    stringstream s;
-    s << "key-" << i;
-    keys[i] = s.str();
+    stringstream k; k << "key-" << i;
+    stringstream v; v << "value-" << i;
+    data[i] = {k.str(), v.str()};
   }
 
-  return keys;
-}
-
-void test_bucket_index() {
-
-  size_t M = 3, N = 1000;
-  LinearHash_LH<string, string> lh;
-
-  for (size_t i = 0; i < M; ++i) {
-    vector<string> keys = generate_keys(N);
-    cout << lh.bucket_index(keys[i], 0) << endl;
-  }
+  return data;
 }
 
 void test() {
 
+  Data data = generate_data(100);
+
   {
     LinearHash_LH<string, string> lh(4, 2);
-    for (size_t i = 1; i < 100; ++i) {
-      stringstream key; key << "key-" << i;
-      stringstream value; value << "value-" << i;
-      lh.put(key.str(), value.str());
+    for (size_t i = 1; i < data.size(); ++i) {
+      lh.put(data[i].first, data[i].second);
       lh.print();
-      pair<bool,string> v = lh.get(key.str());
+      pair<bool,string> v = lh.get(data[i].first);
       assert(v.first);
-      assert(v.second == value.str());
+      assert(v.second == data[i].second);
+    }
+  }
+
+  {
+    LinearHash_PS<string, string> lh(4, 2);
+    for (size_t i = 1; i < data.size(); ++i) {
+      lh.put(data[i].first, data[i].second);
+      lh.print();
+      pair<bool,string> v = lh.get(data[i].first);
+      assert(v.first);
+      assert(v.second == data[i].second);
     }
   }
 }
 
 int main() {
 
-  test_bucket_index();
   test();
 
   return 0;

@@ -2,8 +2,8 @@
  * Linear hashing prototype.
  */
 
-#ifndef LINEAR_HASH_HPP
-#define LINEAR_HASH_HPP
+#ifndef LINEAR_HASH_LH_HPP
+#define LINEAR_HASH_LH_HPP
 
 #include <fast_hash.hpp>
 #include <stl_io.hpp>
@@ -19,6 +19,7 @@ using namespace utils;
  * Split pointer p decides which bucket to split.
  * - p is independent of overflowing bucket.
  * Load factor is between 50 and 70%, with possibly many empty buckets.
+ * There are long chains that stay too long for a long time (till p reaches them).
  * What if p lands on a bucket which has 1 or more full overflow buckets?
  * - The split will only reduce the overflow bucket count by 1, and the remaining overflow buckets
  * - will have to be recreated by seeing which of the new 2 buckets, or their overflow buckets,
@@ -125,4 +126,4 @@ struct LinearHash_LH {
   size_t p; // bucket to split next
 };
 
-#endif //LINEAR_HASH_HPP
+#endif //LINEAR_HASH_LH_HPP
