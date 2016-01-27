@@ -28,6 +28,7 @@ struct LinearHash {
     uint64_t idx = bucket_index(key, i);
     assert(idx < buckets.size());
     assert(p <= (1 << i) * m);
+    assert(buckets.size() == (1 << i) * m + p);
     std::cout << "\tStoring " << key << "," << value << " in bucket: " << idx << std::endl;
     buckets[idx].push_back({key, value});
     if (buckets[idx].size() > b) { // overflow
@@ -73,6 +74,10 @@ struct LinearHash {
   }
 
   void print() const {
+    size_t n_empty_buckets = 0;
+    float avg_bucket_occupancy = 0;
+    float min_bucket_occupancy = std::numeric_limits<float>::max();
+    float max_bucket_occupancy = 0;
     for (size_t j = 0; j < buckets.size(); ++j) {
       std::cout << "\tBucket " << j;
       if (!buckets[j].empty()) {
@@ -80,10 +85,20 @@ struct LinearHash {
         for (auto kv : buckets[j])
           std::cout << kv << " ";
         std::cout << std::endl;
+        min_bucket_occupancy = std::min(min_bucket_occupancy, (float) buckets[j].size());
+        max_bucket_occupancy = std::max(max_bucket_occupancy, (float) buckets[j].size());
+        avg_bucket_occupancy += buckets[j].size();
       }
-      else
+      else {
         std::cout << " empty" << std::endl;
+        ++n_empty_buckets;
+      }
     }
+    std::cout << "empties= " << n_empty_buckets
+    << " min: " << min_bucket_occupancy
+    << " avg: " << (avg_bucket_occupancy/(buckets.size() - n_empty_buckets))
+    << " max: " << max_bucket_occupancy
+    << std::endl;
   }
 
   typedef std::vector<std::pair<K,V>> Bucket;

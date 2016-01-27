@@ -40,7 +40,7 @@ void test() {
 
   {
     LinearHash<string, string> lh(4,2);
-    for (size_t i = 1; i < 20; ++i) {
+    for (size_t i = 1; i < 100; ++i) {
       stringstream key; key << "key-" << i;
       stringstream value; value << "value-" << i;
       lh.put(key.str(), value.str());
