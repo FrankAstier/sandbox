@@ -27,16 +27,18 @@ struct LinearHash {
     std::cout << " n buckets= " << buckets.size() << std::endl;
     uint64_t idx = bucket_index(key, i);
     assert(idx < buckets.size());
+    assert(p <= (1 << i) * m);
+    std::cout << "\tStoring " << key << "," << value << " in bucket: " << idx << std::endl;
     buckets[idx].push_back({key, value});
     if (buckets[idx].size() > b) { // overflow
-      std::cout << "\tOverflow on bucket " << idx << std::endl;
+      std::cout << "\tOverflow on bucket " << idx << " - Splitting bucket " << p << std::endl;
       Bucket old_bucket, new_bucket;
       for (auto kv : buckets[p]) {
-        uint64_t new_idx = bucket_index(key, i+1);
-        std::cout << "\tnew index= " << new_idx << std::endl;
+        uint64_t new_idx = bucket_index(kv.first, i+1);
+        std::cout << "\tnew index= " << new_idx << " ";
         assert(new_idx <= buckets.size() + 1);
-        assert(new_idx == idx || new_idx == idx + m);
-        if (new_idx == idx) {
+        assert(new_idx == p || new_idx == p + (1 << i) * m);
+        if (new_idx == p) {
           std::cout << "\t\t" << kv << " stays in bucket " << idx << std::endl;
           old_bucket.push_back(kv);
         } else {
@@ -44,12 +46,13 @@ struct LinearHash {
           new_bucket.push_back(kv);
         }
       }
-      buckets[idx].swap(old_bucket);
+      buckets[p].swap(old_bucket);
       buckets.push_back(new_bucket);
       ++p;
       if (p == (1 << i) * m) {
         std::cout << "\tp = " << p << " going to next round" << std::endl;
         p = 0;
+        ++i;
       }
     }
   }
