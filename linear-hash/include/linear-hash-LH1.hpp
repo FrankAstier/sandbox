@@ -11,7 +11,7 @@
 using namespace utils;
 
 /**
- * Simplest linear hash, take 2 - actually same as LH for now.
+ * Simplest linear hash, take 2 - trying to use load factor to trigger split.
  */
 template <typename K, typename V>
 struct LinearHash_LH1 {
@@ -38,7 +38,7 @@ struct LinearHash_LH1 {
     assert(buckets.size() == (1 << i) * m + p);
     if (debug) std::cout << "\tStoring " << key << "," << value << " in bucket: " << idx << std::endl;
     buckets[idx].push_back({key, value});
-    if (buckets[idx].size() > b) { // overflow
+    if (buckets[idx].size() > b && ((float)n_entries / (b * (float) buckets.size())) > .999) { // overflow
       if (debug) std::cout << "\tOverflow on bucket " << idx << " - Splitting bucket " << p << std::endl;
       Bucket old_bucket, new_bucket;
       for (auto kv : buckets[p]) {

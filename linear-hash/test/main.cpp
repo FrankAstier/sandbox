@@ -8,6 +8,7 @@
 #include "linear-hash-LH.hpp"
 #include "linear-hash-LH1.hpp"
 #include "linear-hash-PS1.hpp"
+#include "linear-hash-PS2.hpp"
 
 using namespace std;
 using namespace utils;
@@ -35,11 +36,11 @@ void test_modulo() {
 
 void test() {
 
-  Data data = generate_data(10000);
+  Data data = generate_data(100);
 
   {
     cout << "Testing LH" << endl;
-    LinearHash_LH<string, string> lh(10, 4);
+    LinearHash_LH<string, string> lh(20, 2);
     for (size_t i = 1; i < data.size(); ++i) {
       lh.put(data[i].first, data[i].second);
       if (i == data.size()-1)
@@ -51,8 +52,8 @@ void test() {
   }
 
   {
-    cout << "Testing LH1" << endl;
-    LinearHash_LH1<string, string> lh(10, 4);
+    cout << "\nTesting LH1" << endl;
+    LinearHash_LH1<string, string> lh(20, 2);
     for (size_t i = 1; i < data.size(); ++i) {
       lh.put(data[i].first, data[i].second);
       if (i == data.size()-1)
@@ -64,8 +65,21 @@ void test() {
   }
 
   {
-    cout << "Testing PS1" << endl;
+    cout << "\nTesting PS1" << endl;
     LinearHash_PS1<string, string> lh(20,2);
+    for (size_t i = 1; i < data.size(); ++i) {
+      lh.put(data[i].first, data[i].second);
+      if (i == data.size()-1)
+        lh.print();
+      pair<bool,string> v = lh.get(data[i].first);
+      assert(v.first);
+      assert(v.second == data[i].second);
+    }
+  }
+
+  if (false) {
+    cout << "\nTesting PS2" << endl;
+    LinearHash_PS2<string, string> lh(20,2, true);
     for (size_t i = 1; i < data.size(); ++i) {
       lh.put(data[i].first, data[i].second);
       if (i == data.size()-1)

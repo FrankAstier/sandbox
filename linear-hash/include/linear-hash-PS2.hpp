@@ -2,8 +2,8 @@
  * Linear hashing prototype.
  */
 
-#ifndef LINEAR_HASH_PS1_HPP
-#define LINEAR_HASH_PS1_HPP
+#ifndef LINEAR_HASH_PS2_HPP
+#define LINEAR_HASH_PS2_HPP
 
 #include <fast_hash.hpp>
 #include <stl_io.hpp>
@@ -11,17 +11,14 @@
 using namespace utils;
 
 /**
- * Linear hash with priority splitting - take 1.
- *
- * Here, we opportunistically split a bucket that would overflow with the current
- * insertion, if there is already a bucket created to accommodate some of the keys
- * (hi and hi+1 send to bucket j or bucket j + m always).
+ * Linear hash with priority splitting - take 2: splitting with priority.
  */
 template <typename K, typename V>
-struct LinearHash_PS1 {
+struct LinearHash_PS2 {
 
-  LinearHash_PS1(size_t n_buckets =100, size_t bucket_size =4, bool debug = false)
+  LinearHash_PS2(size_t n_buckets =100, size_t bucket_size =4, bool debug = false)
       : buckets(n_buckets),
+        priority(),
         m(n_buckets),
         b(bucket_size),
         i(0),
@@ -44,11 +41,20 @@ struct LinearHash_PS1 {
     if (debug) std::cout << "\tStoring " << key << "," << value << " in bucket: " << idx << std::endl;
     buckets[idx].push_back({key, value});
 
-    if (buckets[idx].size() > b && idx < p) {
+    if (buckets[idx].size() > b) {
+      priority.push_back(idx);
+      std::make_heap(priority.begin(), priority.end(), order);
+    }
+
+    float lf = (float) n_entries / (float) buckets.size();
+
+    if (lf > .95 && *priority.begin() < p) {
+      size_t to_split = priority.back();
+      priority.resize(priority.size() - 1);
       ++n_hits;
-      if (debug) std::cout << "\tOverflow on bucket " << idx << " - Splitting bucket " << idx << std::endl;
+      if (debug) std::cout << "\tSplitting bucket " << to_split << std::endl;
       Bucket old_bucket;
-      for (auto kv : buckets[idx]) {
+      for (auto kv : buckets[to_split]) {
         uint64_t h = utils::fasthash64(key);
         uint64_t k = (1 << (i+1)) * m;
         uint64_t new_idx = h % k;
@@ -57,12 +63,12 @@ struct LinearHash_PS1 {
         if (debug) std::cout << " old index= " << bucket_index(kv.first, i);
         if (debug) std::cout << " -> new index= " << new_idx << " ";
         assert(new_idx <= buckets.size());
-        assert(new_idx == idx || new_idx == idx + (1 << i) * m);
-        if (new_idx == idx) {
-          if (debug) std::cout << "\t\t" << kv << " stays in bucket " << idx << std::endl;
+        assert(new_idx == to_split || new_idx == to_split + (1 << i) * m);
+        if (new_idx == to_split) {
+          if (debug) std::cout << "\t\t" << kv << " stays in bucket " << to_split << std::endl;
           old_bucket.push_back(kv);
         } else {
-          if (debug) std::cout << "\t\t" << kv << " goes to new bucket " << (idx+m) << std::endl;
+          if (debug) std::cout << "\t\t" << kv << " goes to new bucket " << new_idx << std::endl;
           new_bucket.push_back(kv);
         }
       }
@@ -169,7 +175,13 @@ struct LinearHash_PS1 {
 
   typedef std::vector<std::pair<K,V>> Bucket;
 
+  std::function<bool(size_t,size_t)> order = [&](size_t a, size_t b) {
+    return !((a < p && b >= p)
+           || (a < p && b < p && buckets[a].size() > buckets[b].size()));
+  };
+
   std::vector<Bucket> buckets;
+  std::vector<size_t> priority;
   size_t m; // initial number of buckets
   size_t b; // bucket size
   size_t i; // splitting round number
@@ -180,4 +192,4 @@ struct LinearHash_PS1 {
   bool debug;
 };
 
-#endif //LINEAR_HASH_PS1_HPP
+#endif //LINEAR_HASH_PS2_HPP
