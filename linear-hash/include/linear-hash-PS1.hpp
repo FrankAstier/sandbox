@@ -120,6 +120,7 @@ struct LinearHash_PS1 {
     float avg_bucket_occupancy = 0;
     float min_bucket_occupancy = std::numeric_limits<float>::max();
     float max_bucket_occupancy = 0;
+
     for (size_t j = 0; j < buckets.size(); ++j) {
       if (debug) std::cout << "\tBucket " << j;
       if (!buckets[j].empty()) {
@@ -136,14 +137,35 @@ struct LinearHash_PS1 {
         ++n_empty_buckets;
       }
     }
-    std::cout << "empties= " << n_empty_buckets
-    << " min: " << min_bucket_occupancy
-    << " avg: " << (avg_bucket_occupancy/(buckets.size() - n_empty_buckets))
-    << " max: " << max_bucket_occupancy
-    << " entries: " << n_entries
-    << " hits: " << n_hits
-    << " len: " << search_length
+
+    std::cout << "n buckets:" << buckets.size()
+    << " entries:" << n_entries
+    << " empty:" << n_empty_buckets
+    << " min:" << min_bucket_occupancy
+    << " avg:" << (avg_bucket_occupancy/(buckets.size() - n_empty_buckets))
+    << " max:" << max_bucket_occupancy
+    << " hits:" << n_hits
+    << " len:" << search_length
     << std::endl;
+
+    std::vector<float> dist((size_t)max_bucket_occupancy+1);
+
+    for (Bucket bucket : buckets)
+      ++dist[bucket.size()];
+    float M = 0;
+    for (size_t j = 0; j < dist.size(); ++j) {
+      dist[j] /= (float) n_entries;
+      M = std::max(M, dist[j]);
+    }
+    std::cout << "\ndist= " << dist << std::endl << std::endl;
+    float k = 30 / M;
+    for (size_t j = 0; j < dist.size(); ++j) {
+      size_t l =  (size_t) (k * dist[j]);
+      std::cout << j << "\t:";
+      for (size_t jj = 0; jj < l; ++jj)
+        std::cout << "*";
+      std::cout << std::endl;
+    }
   }
 
   typedef std::vector<std::pair<K,V>> Bucket;

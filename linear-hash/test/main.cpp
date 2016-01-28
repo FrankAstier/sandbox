@@ -35,7 +35,7 @@ void test_modulo() {
 
 void test() {
 
-  Data data = generate_data(100);
+  Data data = generate_data(10000);
 
   {
     cout << "Testing LH" << endl;
@@ -65,7 +65,7 @@ void test() {
 
   {
     cout << "Testing PS1" << endl;
-    LinearHash_PS1<string, string> lh(10,2);
+    LinearHash_PS1<string, string> lh(20,2);
     for (size_t i = 1; i < data.size(); ++i) {
       lh.put(data[i].first, data[i].second);
       if (i == data.size()-1)

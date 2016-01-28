@@ -11,7 +11,7 @@
 using namespace utils;
 
 /**
- * Simplest linear hash, take 2
+ * Simplest linear hash, take 2 - actually same as LH for now.
  */
 template <typename K, typename V>
 struct LinearHash_LH1 {
