@@ -2,8 +2,8 @@
  * Linear hashing prototype.
  */
 
-#ifndef LINEAR_HASH_LH_HPP
-#define LINEAR_HASH_LH_HPP
+#ifndef LINEAR_HASH_PS1_HPP
+#define LINEAR_HASH_PS1_HPP
 
 #include <fast_hash.hpp>
 #include <stl_io.hpp>
@@ -11,44 +11,65 @@
 using namespace utils;
 
 /**
- * Simplest linear hash.
+ * Linear hash with priority splitting - take 1.
  *
- * Full buckets are not necessarily split, and an overflow space for temporary overflow buckets is required.
- * Buckets split are not necessarily full.
- * Every bucket will be split sooner or later and so all overflows will be reclaimed and rehashed.
- * Split pointer p decides which bucket to split.
- * - p is independent of overflowing bucket.
- * Load factor is between 50 and 70%, with possibly many empty buckets.
- * There are long chains that stay too long for a long time (till p reaches them).
- * What if p lands on a bucket which has 1 or more full overflow buckets?
- * - The split will only reduce the overflow bucket count by 1, and the remaining overflow buckets
- * - will have to be recreated by seeing which of the new 2 buckets, or their overflow buckets,
- * - the overflow entries belong.
- * The splitting process can overflow another bucket, which will be split only much later.
+ * Here, we opportunistically split a bucket that would overflow with the current
+ * insertion, if there is already a bucket created to accommodate some of the keys
+ * (hi and hi+1 send to bucket j or bucket j + m always).
  */
 template <typename K, typename V>
-struct LinearHash_LH {
+struct LinearHash_PS1 {
 
-  LinearHash_LH(size_t n_buckets =100, size_t bucket_size =4, bool debug=false)
+  LinearHash_PS1(size_t n_buckets =100, size_t bucket_size =4, bool debug = false)
       : buckets(n_buckets),
+        priority(),
         m(n_buckets),
         b(bucket_size),
         i(0),
         p(0),
-        debug(false)
+        n_entries(0),
+        n_hits(0),
+        search_length(0),
+        debug(debug)
   {}
 
   void put(const K& key, const V&value) {
     if (debug) std::cout << "Inserting " << key << " " << value << " - ";
     if (debug) std::cout << "m= " << m << " b= " << b << " i= " << i << " p= " << p;
     if (debug) std::cout << " n buckets= " << buckets.size() << std::endl;
+    ++n_entries;
     uint64_t idx = bucket_index(key, i);
     assert(idx < buckets.size());
     assert(p <= (1 << i) * m);
     assert(buckets.size() == (1 << i) * m + p);
     if (debug) std::cout << "\tStoring " << key << "," << value << " in bucket: " << idx << std::endl;
     buckets[idx].push_back({key, value});
-    if (buckets[idx].size() > b) { // overflow
+
+    if (buckets[idx].size() > b && idx < p) {
+      ++n_hits;
+      if (debug) std::cout << "\tOverflow on bucket " << idx << " - Splitting bucket " << idx << std::endl;
+      Bucket old_bucket;
+      for (auto kv : buckets[idx]) {
+        uint64_t h = utils::fasthash64(key);
+        uint64_t k = (1 << (i+1)) * m;
+        uint64_t new_idx = h % k;
+        Bucket new_bucket = buckets[new_idx];
+        if (debug) std::cout << "\tkey: " << kv.first;
+        if (debug) std::cout << " old index= " << bucket_index(kv.first, i);
+        if (debug) std::cout << " -> new index= " << new_idx << " ";
+        assert(new_idx <= buckets.size());
+        assert(new_idx == idx || new_idx == idx + (1 << i) * m);
+        if (new_idx == idx) {
+          if (debug) std::cout << "\t\t" << kv << " stays in bucket " << idx << std::endl;
+          old_bucket.push_back(kv);
+        } else {
+          if (debug) std::cout << "\t\t" << kv << " goes to new bucket " << (idx+m) << std::endl;
+          new_bucket.push_back(kv);
+        }
+      }
+      buckets[idx].swap(old_bucket);
+
+    } else if (buckets[idx].size() > b) {
       if (debug) std::cout << "\tOverflow on bucket " << idx << " - Splitting bucket " << p << std::endl;
       Bucket old_bucket, new_bucket;
       for (auto kv : buckets[p]) {
@@ -75,11 +96,14 @@ struct LinearHash_LH {
     }
   }
 
-  std::pair<bool, V> get(const K& key) const {
+  std::pair<bool, V> get(const K& key) {
     uint64_t idx = bucket_index(key, i);
-    for (auto kv : buckets[idx])
-      if (kv.first == key)
-        return {true, kv.second};
+    for (size_t j = 0; j < buckets[idx].size(); ++j) {
+      if (buckets[idx][j].first == key) {
+        search_length = ((n_entries-1) * search_length + j)/n_entries;
+        return {true, buckets[idx][j].second};
+      }
+    }
     return {false, V()};
   }
 
@@ -87,7 +111,8 @@ struct LinearHash_LH {
     uint64_t h = utils::fasthash64(key);
     uint64_t k = (1 << ii) * m;
     uint64_t hm = h % k;
-    return hm >= p ? hm : h % (2*k);
+    uint64_t h2 = h % (2*k);
+    return hm >= p ? hm : h2;
   }
 
   void print() const {
@@ -115,17 +140,24 @@ struct LinearHash_LH {
     << " min: " << min_bucket_occupancy
     << " avg: " << (avg_bucket_occupancy/(buckets.size() - n_empty_buckets))
     << " max: " << max_bucket_occupancy
+    << " entries: " << n_entries
+    << " hits: " << n_hits
+    << " len: " << search_length
     << std::endl;
   }
 
   typedef std::vector<std::pair<K,V>> Bucket;
 
   std::vector<Bucket> buckets;
+  std::vector<size_t> priority;
   size_t m; // initial number of buckets
   size_t b; // bucket size
   size_t i; // splitting round number
   size_t p; // bucket to split next
+  size_t n_entries; // total number of entries in hash
+  size_t n_hits; // lucky hits where we split the right bucket
+  float search_length;
   bool debug;
 };
 
-#endif //LINEAR_HASH_LH_HPP
+#endif //LINEAR_HASH_PS1_HPP
