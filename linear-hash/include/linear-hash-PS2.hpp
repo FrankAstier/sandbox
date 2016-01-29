@@ -31,7 +31,7 @@ struct LinearHash_PS2 {
         n_probes(0),
         debug(debug)
   {
-    for (size_t ii = 0; ii < buckets.size(); ++i)
+    for (size_t ii = 0; ii < buckets.size(); ++ii)
       not_split.insert(ii);
   }
 
@@ -84,7 +84,7 @@ struct LinearHash_PS2 {
       if (not_split.empty()) {
         ++i;
         assert(buckets.size() == (1 << i) * m);
-        for (size_t ii = 0; ii < buckets.size(); ++i)
+        for (size_t ii = 0; ii < buckets.size(); ++ii)
           not_split.insert(ii);
       }
     }

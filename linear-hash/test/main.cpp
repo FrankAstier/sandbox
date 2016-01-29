@@ -77,7 +77,7 @@ void test() {
     }
   }
 
-  if (false) {
+  {
     cout << "\nTesting PS2" << endl;
     LinearHash_PS2<string, string> lh(20,2, true);
     for (size_t i = 1; i < data.size(); ++i) {
