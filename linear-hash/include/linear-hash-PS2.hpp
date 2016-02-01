@@ -16,6 +16,8 @@ using namespace std;
  *
  * linear probe
  * split or fill holes in zone 3? just split first
+ * look at less than 64 bytes, which is a cache line size, and contiguous
+ * use fixed size slots for speed: fixed size hash + offset, but has an indirection...
  */
 template <typename K, typename V>
 struct LinearHash_PS2 {
